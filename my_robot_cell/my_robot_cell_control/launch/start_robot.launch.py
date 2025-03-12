@@ -18,6 +18,13 @@ from launch.substitutions import (
 def generate_launch_description():
     ur_type = LaunchConfiguration("ur_type")
     robot_ip = LaunchConfiguration("robot_ip")
+    rviz_config_file = PathJoinSubstitution(
+                        [
+                            FindPackageShare("my_robot_cell_description"),
+                            "rviz",
+                            "urdf.rviz",
+                        ]
+                    )
     declared_arguments = []
     declared_arguments.append(
         DeclareLaunchArgument(
@@ -40,17 +47,24 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "robot_ip",
-            default_value="192.168.56.101",  # put your robot's IP address here
+            default_value="172.17.0.2",  # put your robot's IP address here
             description="IP address by which the robot can be reached.",
         )
     )
     declared_arguments.append(
-        DeclareLaunchArgument("launch_rviz", default_value="true", description="Launch RViz?")
+        DeclareLaunchArgument("launch_rviz", default_value="false", description="Launch RViz?")
     )
 
     return LaunchDescription(
         declared_arguments
         + [
+            Node(
+                package="rviz2",
+                executable="rviz2",
+                name="rviz2",
+                output="log",
+                arguments=["-d", rviz_config_file],
+            ),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
                     [
@@ -66,14 +80,8 @@ def generate_launch_description():
                 launch_arguments={
                     "ur_type": ur_type,
                     "robot_ip": robot_ip,
+                    "launch_rviz": "false",
                     "tf_prefix": [LaunchConfiguration("ur_type"), "_"],
-                    "rviz_config_file": PathJoinSubstitution(
-                        [
-                            FindPackageShare("my_robot_cell_description"),
-                            "rviz",
-                            "urdf.rviz",
-                        ]
-                    ),
                     "description_launchfile": PathJoinSubstitution(
                         [
                             FindPackageShare("my_robot_cell_control"),

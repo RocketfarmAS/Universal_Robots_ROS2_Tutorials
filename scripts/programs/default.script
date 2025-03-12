@@ -1,0 +1,35 @@
+def unnamed():
+  set_standard_analog_input_domain(0, 1)
+  set_standard_analog_input_domain(1, 1)
+  set_tool_analog_input_domain(0, 1)
+  set_tool_analog_input_domain(1, 1)
+  set_analog_outputdomain(0, 0)
+  set_analog_outputdomain(1, 0)
+  set_input_actions_to_default()
+  set_tool_voltage(0)
+  set_tcp(p[0.0,0.0,0.0,0.0,0.0,0.0])
+  set_payload(0.1)
+  step_count_a10169ba_de53_4a8b_a07f_84ad639fcff0 = 0.0
+  thread Step_Counter_Thread_d77eda11_98bc_4245_b891_d9a981a8c081():
+    while (True):
+      step_count_a10169ba_de53_4a8b_a07f_84ad639fcff0 = step_count_a10169ba_de53_4a8b_a07f_84ad639fcff0 + 1.0
+      sync()
+    end
+  end
+  run Step_Counter_Thread_d77eda11_98bc_4245_b891_d9a981a8c081()
+  set_gravity([0.0, 0.0, 9.82])
+  set_safety_mode_transition_hardness(1)
+  # begin: URCap Installation Node
+  #   Source: External Control, 1.0.5, FZI Research Center for Information Technology
+  #   Type: External Control
+  # end: URCap Installation Node
+  while (True):
+    $ 1 "Robot Program"
+    # begin: URCap Program Node
+    #   Source: External Control, 1.0.5, FZI Research Center for Information Technology
+    #   Type: External Control
+    $ 2 "Control by 172.17.0.1"
+popup("The connection to the remote PC at 172.17.0.1:50002 could not be established. Reason: Connection reset","Receive program failed", False, True, blocking=True)
+sync()    # end: URCap Program Node
+  end
+end
